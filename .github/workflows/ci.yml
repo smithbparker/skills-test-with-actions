@@ -5,7 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Run markdown lint
         run: |
           npm install remark-cli remark-preset-lint-consistent
           npx remark . --use remark-preset-lint-consistent --frail
+        continue-on-error: false
+
+      - name: Generate test report
+        run: |
+          npx remark . --use remark-preset-lint-consistent --report-json > remark-lint-report.json
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: remark-lint-report
+          path: remark-lint-report.json
